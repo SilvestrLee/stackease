@@ -55,4 +55,9 @@ class SupportTicket extends Model
     {
         return $this->hasMany(TicketReply::class);
     }
+
+    public function assignedAgent(): BelongsTo
+    {
+    return $this->belongsTo(User::class, 'assigned_to');
+    }
 }
