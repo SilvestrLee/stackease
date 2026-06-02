@@ -41,7 +41,7 @@ class PaymentForm
                         'bank_transfer' => 'Bank Transfer',
                         'manual' => 'Manual',
                     ])
-                    ->default('paystack'),
+                    ->default('manual'),
 
                 TextInput::make('amount')
                     ->required()
@@ -55,15 +55,16 @@ class PaymentForm
                     ->required()
                     ->options([
                         'pending' => 'Pending',
-                        'processing' => 'Processing',
-                        'successful' => 'Successful',
+                        'verified' => 'Verified',
+                        'rejected' => 'Rejected',
                         'failed' => 'Failed',
                         'cancelled' => 'Cancelled',
                         'refunded' => 'Refunded',
                     ])
                     ->default('pending'),
 
-                TextInput::make('payment_channel'),
+                TextInput::make('payment_channel')
+                    ->default('manual_admin_entry'),
 
                 TextInput::make('proof_of_payment_path'),
 

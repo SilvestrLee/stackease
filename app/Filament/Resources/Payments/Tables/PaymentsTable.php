@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PaymentsTable
@@ -26,6 +27,11 @@ class PaymentsTable
                 TextColumn::make('invoice.invoice_reference')
                     ->label('Invoice')
                     ->searchable(),
+
+                TextColumn::make('invoice.status')
+                    ->label('Invoice Status')
+                    ->badge()
+                    ->sortable(),
 
                 TextColumn::make('gateway')
                     ->badge()
@@ -54,6 +60,25 @@ class PaymentsTable
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'verified' => 'Verified',
+                        'rejected' => 'Rejected',
+                        'failed' => 'Failed',
+                        'cancelled' => 'Cancelled',
+                        'refunded' => 'Refunded',
+                    ]),
+
+                SelectFilter::make('gateway')
+                    ->options([
+                        'paystack' => 'Paystack',
+                        'flutterwave' => 'Flutterwave',
+                        'bank_transfer' => 'Bank Transfer',
+                        'manual' => 'Manual',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),
