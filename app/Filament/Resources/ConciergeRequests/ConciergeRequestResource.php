@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ConciergeRequests;
 use App\Filament\Resources\ConciergeRequests\Pages\CreateConciergeRequest;
 use App\Filament\Resources\ConciergeRequests\Pages\EditConciergeRequest;
 use App\Filament\Resources\ConciergeRequests\Pages\ListConciergeRequests;
+use App\Filament\Resources\ConciergeRequests\RelationManagers\InvoicesRelationManager;
 use App\Filament\Resources\ConciergeRequests\Schemas\ConciergeRequestForm;
 use App\Filament\Resources\ConciergeRequests\Tables\ConciergeRequestsTable;
 use App\Models\ConciergeRequest;
@@ -23,7 +24,7 @@ class ConciergeRequestResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Operations';
 
     protected static ?int $navigationSort = 1;
-    
+
     protected static ?string $recordTitleAttribute = 'request_reference';
 
     public static function form(Schema $schema): Schema
@@ -39,7 +40,7 @@ class ConciergeRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            InvoicesRelationManager::class,
         ];
     }
 
