@@ -20,6 +20,10 @@ class SupportTicketResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Operations';
+
+    protected static ?int $navigationSort = 3;
+    
     protected static ?string $recordTitleAttribute = 'ticket_reference';
 
     public static function form(Schema $schema): Schema

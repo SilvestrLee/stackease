@@ -20,6 +20,10 @@ class TicketReplyResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Operations';
+
+    protected static ?int $navigationSort = 4;
+    
     protected static ?string $recordTitleAttribute = 'message';
 
     public static function form(Schema $schema): Schema

@@ -20,6 +20,10 @@ class SubscriptionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Subscriptions';
+
+    protected static ?int $navigationSort = 3;
+    
     protected static ?string $recordTitleAttribute = 'subscription_reference';
 
     public static function form(Schema $schema): Schema
