@@ -15,50 +15,49 @@ class ConciergeRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->searchable(),
-                TextColumn::make('provider.name')
-                    ->searchable(),
-                TextColumn::make('batchWindow.name')
-                    ->searchable(),
                 TextColumn::make('request_reference')
+                    ->label('Reference')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('user.name')
+                    ->label('Customer')
                     ->searchable(),
+
+                TextColumn::make('provider.name')
+                    ->label('Provider')
+                    ->searchable(),
+
                 TextColumn::make('service_name')
-                    ->searchable(),
+                    ->label('Service')
+                    ->searchable()
+                    ->limit(30),
+
                 TextColumn::make('request_type')
+                    ->label('Type')
                     ->searchable(),
-                TextColumn::make('desired_plan')
-                    ->searchable(),
+
                 TextColumn::make('seat_count')
+                    ->label('Seats')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('duration')
-                    ->searchable(),
-                TextColumn::make('budget_range')
-                    ->searchable(),
+
                 IconColumn::make('existing_account')
+                    ->label('Existing Account')
                     ->boolean(),
+
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('priority')
-                    ->searchable(),
-                TextColumn::make('reviewed_at')
-                    ->dateTime()
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('completed_at')
-                    ->dateTime()
-                    ->sortable(),
+
                 TextColumn::make('created_at')
+                    ->label('Submitted')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
+                    ->sortable(),
             ])
             ->recordActions([
                 EditAction::make(),
