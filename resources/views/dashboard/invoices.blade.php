@@ -105,6 +105,11 @@
                                         {{ str_replace('_', ' ', $invoice->status) }}
                                     </span>
 
+                                    <a href="{{ route('dashboard.invoices.show', $invoice) }}"
+                                       class="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800">
+                                        View Invoice
+                                    </a>
+
                                     @if ($invoice->expires_at)
                                         <p class="mt-4 text-xs text-gray-500">
                                             Expires: {{ $invoice->expires_at->format('M d, Y h:i A') }}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
@@ -91,6 +92,20 @@ Route::middleware('auth')->group(function () {
                 ->get(),
         ]);
     })->name('dashboard.invoices');
+
+    Route::get('/dashboard/invoices/{invoice}', function (Invoice $invoice) {
+        abort_unless($invoice->user_id === auth()->id(), 403);
+
+        $invoice->load([
+            'conciergeRequest',
+            'pricingSnapshot',
+            'payments',
+        ]);
+
+        return view('dashboard.invoice-show', [
+            'invoice' => $invoice,
+        ]);
+    })->name('dashboard.invoices.show');
 
     Route::get('/dashboard/subscriptions', function () {
         return view('dashboard.subscriptions', [
