@@ -1,129 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="se-html">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'StackEase' }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? 'StackEase - Digital Tool Stacks. Simplified.' }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-950 text-white antialiased">
-    <div class="min-h-screen flex flex-col">
-        <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-                <a href="{{ route('home') }}" class="flex items-center gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-400 text-slate-950 font-black">
-                        S
-                    </span>
-                    <span class="text-xl font-bold tracking-tight">
-                        Stack<span class="font-medium text-emerald-300">Ease</span>
-                    </span>
-                </a>
 
-                <nav class="hidden items-center gap-8 text-sm font-medium text-slate-300 md:flex">
-                    <a href="{{ route('services') }}" class="hover:text-white">Services</a>
-                    <a href="{{ route('deals') }}" class="hover:text-white">Deals</a>
-                    <a href="{{ route('managed-subscriptions') }}" class="hover:text-white">Managed Subscriptions</a>
-                    <a href="{{ route('concierge') }}" class="hover:text-white">Concierge Request</a>
-                </nav>
+<body class="se-body">
+    <header class="se-header" id="seHeader">
+        <div class="se-container se-header__inner">
+            <a href="{{ route('home') }}" class="se-logo" aria-label="StackEase">
+                <span class="se-logo__mark">S</span>
+                <span class="se-logo__text">StackEase</span>
+            </a>
 
-                <div class="hidden items-center gap-3 md:flex">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="rounded-full border border-white/15 px-5 py-2 text-sm font-semibold text-white hover:bg-white/10">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm font-semibold text-slate-300 hover:text-white">
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}" class="rounded-full bg-emerald-400 px-5 py-2 text-sm font-bold text-slate-950 hover:bg-emerald-300">
-                            Get Started
-                        </a>
-                    @endauth
-                </div>
+            <nav class="se-nav" aria-label="Main navigation">
+                <a href="{{ route('services') }}">Services</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="{{ url('/pricing') }}">Pricing</a>
+                <a href="{{ url('/resources') }}">Resources</a>
+                <a href="{{ url('/about-us') }}">About Us</a>
+            </nav>
 
-                <button
-                    type="button"
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white md:hidden"
-                    onclick="document.getElementById('mobileMenu').classList.toggle('hidden')"
-                    aria-label="Open menu"
-                >
-                    ☰
+            <div class="se-header__actions">
+                <button class="se-theme-toggle" type="button" id="seThemeToggle" aria-label="Toggle theme">
+                    <span class="se-theme-toggle__icon" id="seThemeIcon">🌙</span>
+                </button>
+
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="se-login-link">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="se-login-link">Log in</a>
+                @endauth
+
+                <a href="{{ route('concierge') }}" class="se-btn se-btn--primary">Request Setup Help</a>
+
+                <button class="se-menu-toggle" type="button" id="seMenuToggle" aria-label="Open menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
+        </div>
 
-            <div id="mobileMenu" class="hidden border-t border-white/10 px-6 py-4 md:hidden">
-                <nav class="flex flex-col gap-4 text-sm font-medium text-slate-300">
-                    <a href="{{ route('services') }}" class="hover:text-white">Services</a>
-                    <a href="{{ route('deals') }}" class="hover:text-white">Deals</a>
-                    <a href="{{ route('managed-subscriptions') }}" class="hover:text-white">Managed Subscriptions</a>
-                    <a href="{{ route('concierge') }}" class="hover:text-white">Concierge Request</a>
+        <div class="se-mobile-menu" id="seMobileMenu">
+            <a href="{{ route('services') }}">Services</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="{{ url('/pricing') }}">Pricing</a>
+            <a href="{{ url('/resources') }}">Resources</a>
+            <a href="{{ url('/about-us') }}">About Us</a>
 
-                    <div class="mt-3 border-t border-white/10 pt-4">
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="block rounded-full border border-white/15 px-5 py-3 text-center text-sm font-semibold text-white">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="block py-2 text-slate-300">Login</a>
-                            <a href="{{ route('register') }}" class="mt-2 block rounded-full bg-emerald-400 px-5 py-3 text-center text-sm font-bold text-slate-950">
-                                Get Started
-                            </a>
-                        @endauth
-                    </div>
-                </nav>
-            </div>
-        </header>
+            @auth
+                <a href="{{ url('/dashboard') }}">Dashboard</a>
+            @else
+                <a href="{{ route('login') }}">Log in</a>
+            @endauth
 
-        <main class="flex-1">
-            {{ $slot }}
-        </main>
+            <a href="{{ route('concierge') }}">Request Setup Help</a>
+        </div>
+    </header>
 
-        <footer class="border-t border-white/10 bg-slate-950">
-            <div class="mx-auto grid max-w-7xl gap-10 px-6 py-12 lg:grid-cols-4 lg:px-8">
-                <div class="lg:col-span-2">
-                    <div class="flex items-center gap-3">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-400 text-slate-950 font-black">
-                            S
-                        </span>
-                        <span class="text-xl font-bold">
-                            Stack<span class="font-medium text-emerald-300">Ease</span>
-                        </span>
-                    </div>
-                    <p class="mt-4 max-w-xl text-sm leading-6 text-slate-400">
-                        StackEase helps Nigerian businesses, creators, agencies, and teams request, pay for, set up, and manage approved digital tool stacks with guided support.
-                    </p>
-                </div>
+    <main>
+        @yield('content')
+    </main>
 
-                <div>
-                    <h3 class="text-sm font-bold text-white">Company</h3>
-                    <ul class="mt-4 space-y-3 text-sm text-slate-400">
-                        <li><a href="{{ route('services') }}" class="hover:text-white">Services</a></li>
-                        <li><a href="{{ route('deals') }}" class="hover:text-white">Deals</a></li>
-                        <li><a href="{{ route('concierge') }}" class="hover:text-white">Concierge Request</a></li>
-                        <li><a href="{{ route('managed-subscriptions') }}" class="hover:text-white">Managed Subscriptions</a></li>
-                    </ul>
-                </div>
+    <footer class="se-footer">
+        <div class="se-container se-footer__grid">
+            <div class="se-footer__brand">
+                <a href="{{ route('home') }}" class="se-logo se-logo--footer" aria-label="StackEase">
+                    <span class="se-logo__mark">S</span>
+                    <span class="se-logo__text">StackEase</span>
+                </a>
 
-                <div>
-                    <h3 class="text-sm font-bold text-white">Policies</h3>
-                    <ul class="mt-4 space-y-3 text-sm text-slate-400">
-                        <li><a href="{{ route('policies.terms') }}" class="hover:text-white">Terms of Use</a></li>
-                        <li><a href="{{ route('policies.privacy') }}" class="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="{{ route('policies.refund') }}" class="hover:text-white">Refund Policy</a></li>
-                        <li><a href="{{ route('policies.subscription') }}" class="hover:text-white">Subscription Policy</a></li>
-                        <li><a href="{{ route('policies.acceptable-use') }}" class="hover:text-white">Acceptable Use Policy</a></li>
-                        <li><a href="{{ route('policies.disclaimer') }}" class="hover:text-white">Disclaimer</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-white/10 px-6 py-6">
-                <p class="mx-auto max-w-7xl text-sm text-slate-500">
-                    © {{ date('Y') }} StackEase. Digital tool stacks, simplified.
+                <p>
+                    We help Nigerian businesses, creators, agencies, and teams access and manage approved digital tools with ease.
                 </p>
             </div>
-        </footer>
-    </div>
+
+            <div>
+                <h4>Company</h4>
+                <a href="{{ url('/about-us') }}">About Us</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="{{ url('/pricing') }}">Pricing</a>
+                <a href="{{ url('/blog') }}">Blog</a>
+                <a href="{{ url('/contact-us') }}">Contact Us</a>
+            </div>
+
+            <div>
+                <h4>Services</h4>
+                <a href="{{ route('services') }}">All Services</a>
+                <a href="{{ route('services') }}">Canva Support</a>
+                <a href="{{ route('services') }}">Google Workspace</a>
+                <a href="{{ route('services') }}">Notion Setup</a>
+                <a href="{{ route('services') }}">Microsoft 365</a>
+                <a href="{{ route('services') }}">VPN Solutions</a>
+            </div>
+
+            <div>
+                <h4>Resources</h4>
+                <a href="{{ url('/help-center') }}">Help Center</a>
+                <a href="{{ url('/guides') }}">Guides</a>
+                <a href="{{ url('/faq') }}">FAQ</a>
+                <a href="{{ url('/status') }}">Status</a>
+                <a href="{{ url('/request-support') }}">Request Support</a>
+            </div>
+
+            <div>
+                <h4>Legal</h4>
+                <a href="{{ url('/terms-of-use') }}">Terms of Use</a>
+                <a href="{{ url('/privacy-policy') }}">Privacy Policy</a>
+                <a href="{{ url('/refund-policy') }}">Refund Policy</a>
+                <a href="{{ url('/subscription-policy') }}">Subscription Policy</a>
+                <a href="{{ url('/acceptable-use-policy') }}">Acceptable Use Policy</a>
+            </div>
+        </div>
+
+        <div class="se-container se-footer__bottom">
+            <p>© 2025 StackEase. All rights reserved.</p>
+            <p>Made with ❤️ in Nigeria</p>
+        </div>
+    </footer>
 </body>
 </html>

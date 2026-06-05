@@ -1,319 +1,199 @@
-<x-layouts.public title="StackEase | Digital Tool Stacks, Simplified">
-    <section class="relative overflow-hidden">
-        <div class="absolute inset-0 opacity-80" style="background: radial-gradient(circle at top right, rgba(52, 211, 153, 0.18), transparent 35%), radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 30%);"></div>
+@extends('layouts.public')
 
-        <div class="relative mx-auto max-w-7xl px-6 py-24 text-center lg:px-8 lg:py-32">
-            <p class="mb-6 inline-flex rounded-full border se-border se-surface px-4 py-2 text-sm font-semibold" style="color: var(--accent);">
-                Built for Nigerian businesses, creators, agencies, and teams
-            </p>
+@section('content')
 
-            <h1 class="mx-auto max-w-5xl text-4xl font-black tracking-tight se-text-main sm:text-6xl lg:text-7xl">
-                Digital tool stacks, simplified.
+<section class="se-ref-hero">
+    <div class="se-ref-container se-ref-hero-grid">
+        <div class="se-ref-hero-copy">
+            <div class="se-ref-pill">Digital tools. Simplified.</div>
+
+            <h1>
+                Access the tools your<br>
+                business needs.<br>
+                We handle the rest.
             </h1>
 
-            <p class="mx-auto mt-6 max-w-3xl text-lg leading-8 se-text-muted">
-                StackEase helps you request, pay for, set up, and manage approved business tools like Canva Teams, Google Workspace, Notion, Slack, VPNs, and Microsoft 365 with guided support.
+            <p>
+                StackEase helps businesses and creators request, pay for, set up, and manage approved digital tools with ease.
             </p>
 
-            <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <a href="{{ route('concierge') }}" class="se-accent rounded-full px-7 py-4 text-base font-bold">
-                    Request Setup Help
-                </a>
-
-                <a href="{{ route('services') }}" class="rounded-full border se-border px-7 py-4 text-base font-bold se-text-main hover:se-surface">
-                    Explore Services
-                </a>
+            <div class="se-ref-hero-actions">
+                <a href="{{ route('concierge') }}" class="se-ref-btn se-ref-btn-primary">Request Setup Help</a>
+                <a href="{{ route('services') }}" class="se-ref-btn se-ref-btn-outline">Explore Services</a>
             </div>
 
-            <p class="mx-auto mt-6 max-w-2xl text-sm se-text-soft">
-                StackEase is focused on approved business, productivity, collaboration, creative, AI, cloud, and security tools. We do not promote shared-password entertainment slots.
-            </p>
-        </div>
-    </section>
-
-    <section class="border-y se-border se-surface">
-        <div class="mx-auto grid max-w-7xl gap-6 px-6 py-14 lg:grid-cols-3 lg:px-8">
-            <div class="rounded-3xl border se-border se-surface-strong p-8">
-                <h2 class="text-xl font-bold se-text-main">Request</h2>
-                <p class="mt-3 se-text-soft">Tell us the tool, plan, seats, and setup support you need.</p>
+            <div class="se-ref-trust">
+                <span>🛡</span>
+                Secure • Reliable • Trusted by businesses across Nigeria
             </div>
 
-            <div class="rounded-3xl border se-border se-surface-strong p-8">
-                <h2 class="text-xl font-bold se-text-main">Pay</h2>
-                <p class="mt-3 se-text-soft">Receive a clear invoice with FX buffer, service fee, and payment instructions.</p>
-            </div>
-
-            <div class="rounded-3xl border se-border se-surface-strong p-8">
-                <h2 class="text-xl font-bold se-text-main">Get Set Up</h2>
-                <p class="mt-3 se-text-soft">Our team manually processes your request and guides access delivery securely.</p>
+            <div class="se-ref-users">
+                <div class="se-ref-avatars">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <p>Join 500+ businesses already using StackEase</p>
             </div>
         </div>
-    </section>
 
-    <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div class="se-ref-dashboard">
+            <div class="se-ref-dashboard-sidebar">
+                <div class="se-ref-dash-logo"></div>
+                <a class="active">Overview</a>
+                <a>My Requests</a>
+                <a>Invoices</a>
+                <a>Subscriptions</a>
+                <a>Support Tickets</a>
+                <a>Account Settings</a>
+
+                <div class="se-ref-help">
+                    <small>Need help?</small>
+                    <strong>Contact Support</strong>
+                </div>
+            </div>
+
+            <div class="se-ref-dashboard-main">
+                <div class="se-ref-dashboard-top">
+                    <h3>Overview</h3>
+                    <p>Welcome back, Admin 👋</p>
+                </div>
+
+                <div class="se-ref-stats">
+                    <div>
+                        <small>Active Subscriptions</small>
+                        <strong>12</strong>
+                        <span>+2 this month</span>
+                    </div>
+                    <div>
+                        <small>Pending Requests</small>
+                        <strong>2</strong>
+                        <span>Awaiting review</span>
+                    </div>
+                    <div>
+                        <small>Unpaid Invoices</small>
+                        <strong>1</strong>
+                        <span>₦45,500.00</span>
+                    </div>
+                    <div>
+                        <small>Renewals Due Soon</small>
+                        <strong>3</strong>
+                        <span>Next 30 days</span>
+                    </div>
+                </div>
+
+                <div class="se-ref-activity">
+                    <h4>Recent Activity</h4>
+
+                    <div class="se-ref-activity-row">
+                        <span></span>
+                        <p>Invoice #INV-4290 was paid<br><small>May 16, 2025 · 10:45 AM</small></p>
+                        <em>Paid</em>
+                    </div>
+
+                    <div class="se-ref-activity-row">
+                        <span></span>
+                        <p>Canva Teams request approved<br><small>May 17, 2025 · 01:15 PM</small></p>
+                        <em>Approved</em>
+                    </div>
+
+                    <div class="se-ref-activity-row">
+                        <span></span>
+                        <p>Google Workspace setup completed<br><small>May 25, 2025 · 4:20 PM</small></p>
+                        <em>Completed</em>
+                    </div>
+
+                    <div class="se-ref-activity-row">
+                        <span></span>
+                        <p>Support ticket #TIC-118 replied<br><small>May 25, 2025 · 08:10 AM</small></p>
+                        <em>Replied</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="se-ref-providers">
+    <div class="se-ref-container">
+        <p>WE HELP YOU ACCESS AND MANAGE TOOLS FROM LEADING PROVIDERS</p>
+
+        <div class="se-ref-provider-row">
+            <span>Canva</span>
+            <span>Google Workspace</span>
+            <span>▣ Notion</span>
+            <span>✣ slack</span>
+            <span>zoom</span>
+            <span>▦ Microsoft 365</span>
+            <span>🛡 VPN</span>
+        </div>
+    </div>
+</section>
+
+<section class="se-ref-section">
+    <div class="se-ref-container">
+        <div class="se-ref-section-head">
+            <span>OUR SERVICES</span>
+            <h2>Digital tools for every business need</h2>
+            <p>We handle setup, payment, access delivery, and ongoing management.</p>
+        </div>
+
+        <div class="se-ref-service-grid">
+            <article><div>C</div><h3>Canva Teams Support</h3><p>Setup, payment, and team management for Canva Teams.</p><a>Learn more →</a></article>
+            <article><div>G</div><h3>Google Workspace</h3><p>Get Google Workspace for your team with expert setup and support.</p><a>Learn more →</a></article>
+            <article><div>N</div><h3>Notion Setup</h3><p>Workspace setup, team access, and ongoing support for Notion.</p><a>Learn more →</a></article>
+            <article><div>S</div><h3>Slack Setup</h3><p>Get your team connected with Slack workspace setup.</p><a>Learn more →</a></article>
+            <article><div>Z</div><h3>Zoom Business</h3><p>Professional Zoom setup for meetings, webinars and teams.</p><a>Learn more →</a></article>
+            <article><div>V</div><h3>VPN Solutions</h3><p>Secure and reliable VPN setup for your business needs.</p><a>Learn more →</a></article>
+            <article><div>M</div><h3>Microsoft 365</h3><p>Microsoft 365 setup and support for productivity and collaboration.</p><a>Learn more →</a></article>
+            <article><div>+</div><h3>More Tools</h3><p>Need something else? We can help with other business tools.</p><a>Learn more →</a></article>
+        </div>
+    </div>
+</section>
+
+<section class="se-ref-process" id="how-it-works">
+    <div class="se-ref-container">
+        <div class="se-ref-section-head">
+            <span>HOW IT WORKS</span>
+            <h2>Simple process. Zero stress.</h2>
+            <p>From request to setup, we make it easy.</p>
+        </div>
+
+        <div class="se-ref-process-row">
+            <article><div>1</div><h3>Submit Request</h3><p>Tell us the tool, plan, seats, and setup you need.</p></article>
+            <article><div>2</div><h3>Receive Invoice</h3><p>We review and send a clear FX-buffered invoice.</p></article>
+            <article><div>3</div><h3>Make Payment</h3><p>Pay securely via Paystack or bank transfer.</p></article>
+            <article><div>4</div><h3>We Handle the Rest</h3><p>We setup, deliver access, and manage it for you.</p></article>
+            <article><div>5</div><h3>You Stay Productive</h3><p>Focus on your business while we handle the rest.</p></article>
+        </div>
+
+        <div class="se-ref-center">
+            <a href="{{ route('concierge') }}" class="se-ref-btn se-ref-btn-primary">Start a Request</a>
+        </div>
+    </div>
+</section>
+
+<section class="se-ref-section">
+    <div class="se-ref-container">
+        <div class="se-ref-section-head">
+            <span>WHY STACKEASE?</span>
+            <h2>Built for businesses. Backed by trust.</h2>
+        </div>
+
+        <div class="se-ref-why-row">
+            <article><div>🛡</div><h3>Secure &amp; Compliant</h3><p>We handle sensitive access with strict security and privacy standards.</p></article>
+            <article><div>₦</div><h3>Transparent Pricing</h3><p>We review and send fair and no hidden charges.</p></article>
+            <article><div>●</div><h3>Expert Support</h3><p>Real people, fast responses, and dedicated support.</p></article>
+            <article><div>⚙</div><h3>Reliable &amp; Timely</h3><p>We deliver on time and manage renewals so you don’t have to.</p></article>
+        </div>
+
+        <div class="se-ref-dark-cta">
             <div>
-                <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                    What StackEase Does
-                </p>
-
-                <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                    We help you access and manage the tools your work depends on.
-                </h2>
-
-                <p class="mt-5 text-lg leading-8 se-text-muted">
-                    Many businesses need global digital tools, but payment, setup, FX changes, team access, and renewals can become stressful. StackEase gives you a guided way to request support, receive clear pricing, and manage approved tool setups.
-                </p>
+                <h2>Ready to simplify your digital stack?</h2>
+                <p>Submit your request now and let us handle the rest.</p>
             </div>
 
-            <div class="grid gap-4">
-                <div class="rounded-3xl border se-border se-surface p-6">
-                    <h3 class="font-bold se-text-main">Payment and setup guidance</h3>
-                    <p class="mt-2 se-text-soft">Submit your request and receive a clear invoice before anything is processed.</p>
-                </div>
-
-                <div class="rounded-3xl border se-border se-surface p-6">
-                    <h3 class="font-bold se-text-main">Managed subscription records</h3>
-                    <p class="mt-2 se-text-soft">Track requested tools, active subscriptions, renewal dates, and support history.</p>
-                </div>
-
-                <div class="rounded-3xl border se-border se-surface p-6">
-                    <h3 class="font-bold se-text-main">Secure access handling</h3>
-                    <p class="mt-2 se-text-soft">Sensitive setup details are handled carefully and protected by acknowledgment steps.</p>
-                </div>
-            </div>
+            <a href="{{ route('concierge') }}" class="se-ref-btn se-ref-btn-primary">Request Setup Help →</a>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="border-y se-border se-surface">
-        <div class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                    Who It Helps
-                </p>
-
-                <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                    Built for people who need serious tools without operational stress.
-                </h2>
-            </div>
-
-            <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                @foreach ([
-                    ['Freelancers', 'Designers, developers, writers, consultants, and independent professionals.'],
-                    ['Small Agencies', 'Creative, marketing, web, and consulting teams managing tools for client work.'],
-                    ['Creators', 'Content creators who need design, AI, storage, productivity, and collaboration tools.'],
-                    ['Small Businesses', 'SMEs that need email, documentation, meetings, file storage, and secure access.'],
-                    ['Churches & Ministries', 'Teams managing media, communication, operations, and online collaboration.'],
-                    ['Remote Teams', 'Distributed teams that need reliable productivity and collaboration stacks.'],
-                ] as [$title, $text])
-                    <div class="rounded-3xl border se-border se-surface-strong p-7">
-                        <h3 class="text-lg font-bold se-text-main">{{ $title }}</h3>
-                        <p class="mt-3 se-text-soft">{{ $text }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                    Services
-                </p>
-
-                <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                    Start with the tools your business already needs.
-                </h2>
-
-                <p class="mt-5 text-lg se-text-muted">
-                    StackEase begins with practical B2B tools for design, productivity, collaboration, security, and business operations.
-                </p>
-            </div>
-
-            <a href="{{ route('services') }}" class="rounded-full border se-border px-6 py-3 text-sm font-bold se-text-main hover:se-surface">
-                View all services
-            </a>
-        </div>
-
-        <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            @foreach ([
-                ['Canva Teams Support', 'Request Canva Teams setup and workspace support for your creative team.'],
-                ['Google Workspace Support', 'Get help with business email, storage, documents, and team setup.'],
-                ['Notion Setup', 'Organize notes, databases, wikis, and internal documentation.'],
-                ['Slack Setup', 'Set up team communication channels and workspace access.'],
-                ['VPN Setup', 'Request support for approved VPN and security tools.'],
-                ['Microsoft 365 Setup', 'Get support for Microsoft productivity, email, and collaboration tools.'],
-            ] as [$title, $text])
-                <div class="rounded-3xl border se-border se-surface p-7">
-                    <h3 class="text-lg font-bold se-text-main">{{ $title }}</h3>
-                    <p class="mt-3 se-text-soft">{{ $text }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <section class="border-y se-border se-surface">
-        <div class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                    How It Works
-                </p>
-
-                <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                    A simple request-to-setup workflow.
-                </h2>
-            </div>
-
-            <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                @foreach ([
-                    ['01', 'Submit Request', 'Tell us the tool, plan, seats, and setup need.'],
-                    ['02', 'Receive Invoice', 'We review the request and send a clear invoice.'],
-                    ['03', 'Payment Confirmation', 'Pay through available options or submit proof for manual review.'],
-                    ['04', 'Setup & Support', 'We process the request and guide your setup securely.'],
-                ] as [$number, $title, $text])
-                    <div class="rounded-3xl border se-border se-surface-strong p-7">
-                        <span class="text-sm font-black" style="color: var(--accent);">{{ $number }}</span>
-                        <h3 class="mt-4 text-lg font-bold se-text-main">{{ $title }}</h3>
-                        <p class="mt-3 se-text-soft">{{ $text }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-start">
-            <div>
-                <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                    Why Choose Us
-                </p>
-
-                <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                    Built around clarity, compliance, and practical support.
-                </h2>
-
-                <p class="mt-5 text-lg leading-8 se-text-muted">
-                    StackEase is designed as a guided support layer for business tools, not a risky shortcut platform. The focus is clear requests, transparent invoices, careful access handling, and support after setup.
-                </p>
-            </div>
-
-            <div class="grid gap-4">
-                @foreach ([
-                    ['B2B-first positioning', 'Focused on productivity, business, creative, AI, cloud, and security tools.'],
-                    ['Clear invoice logic', 'Pricing can include provider cost, FX buffer, service fee, and gateway fee.'],
-                    ['Manual review where needed', 'Riskier tools can be reviewed before approval or fulfillment.'],
-                    ['Support-ready structure', 'Requests, subscriptions, invoices, payments, and tickets can be tracked.'],
-                ] as [$title, $text])
-                    <div class="rounded-3xl border se-border se-surface p-6">
-                        <h3 class="font-bold se-text-main">{{ $title }}</h3>
-                        <p class="mt-2 se-text-soft">{{ $text }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section class="border-y se-border se-surface">
-        <div class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-            <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-                <div class="max-w-3xl">
-                    <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                        Blog & Resources
-                    </p>
-
-                    <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                        Learn how to choose, pay for, and manage your business tools better.
-                    </h2>
-
-                    <p class="mt-5 text-lg se-text-muted">
-                        Practical guides for Nigerian businesses, freelancers, creators, and teams using global digital tools.
-                    </p>
-                </div>
-
-                <a href="#" class="rounded-full border se-border px-6 py-3 text-sm font-bold se-text-main hover:se-surface">
-                    Visit Blog
-                </a>
-            </div>
-
-            <div class="mt-10 grid gap-6 md:grid-cols-3">
-                @foreach ([
-                    ['How Nigerian Businesses Can Manage Global SaaS Tools Without Payment Stress', 'A practical guide to handling payment, setup, FX changes, and renewals for global digital tools.'],
-                    ['Canva Teams for Small Businesses: What to Know Before You Subscribe', 'Understand seats, team access, design workflows, and setup considerations before requesting Canva Teams support.'],
-                    ['Why FX Changes Affect Digital Subscription Pricing in Nigeria', 'A simple explanation of exchange rates, buffers, invoice expiry, and why clear pricing matters.'],
-                ] as [$title, $excerpt])
-                    <article class="rounded-3xl border se-border se-surface-strong p-7">
-                        <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--accent);">
-                            Resource
-                        </p>
-
-                        <h3 class="mt-4 text-lg font-bold leading-7 se-text-main">
-                            {{ $title }}
-                        </h3>
-
-                        <p class="mt-3 se-text-soft">
-                            {{ $excerpt }}
-                        </p>
-
-                        <a href="#" class="mt-6 inline-flex text-sm font-bold" style="color: var(--accent);">
-                            Read article →
-                        </a>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-4xl px-6 py-20 lg:px-8">
-        <div class="text-center">
-            <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                FAQ
-            </p>
-
-            <h2 class="mt-4 text-3xl font-black tracking-tight se-text-main sm:text-4xl">
-                Questions before you request?
-            </h2>
-        </div>
-
-        <div class="mt-10 space-y-4">
-            @foreach ([
-                ['Is StackEase a subscription seller?', 'StackEase is positioned as a request, payment, setup, and managed support layer for approved digital tools. Some requests may require manual review before approval.'],
-                ['Can I request any tool?', 'You can request supported business, productivity, creative, AI, cloud, and security tools. Restricted or risky tools may be declined.'],
-                ['Do you store passwords?', 'Sensitive access or invitation details must not be stored as normal text. The platform is designed to use encrypted access payloads where necessary.'],
-                ['How fast is setup?', 'Setup depends on the tool, payment confirmation, provider process, and batch window. Requests are processed after review and payment confirmation.'],
-                ['Can businesses manage renewals?', 'Yes. StackEase is being built to help users track active subscriptions, renewal dates, and support tickets.'],
-            ] as [$question, $answer])
-                <div class="rounded-3xl border se-border se-surface-strong p-6">
-                    <h3 class="font-bold se-text-main">{{ $question }}</h3>
-                    <p class="mt-3 se-text-soft">{{ $answer }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
-        <div class="rounded-[2rem] border se-border se-surface-strong px-8 py-14 text-center lg:px-16">
-            <p class="text-sm font-bold uppercase tracking-[0.25em]" style="color: var(--accent);">
-                Ready to simplify your stack?
-            </p>
-
-            <h2 class="mx-auto mt-4 max-w-3xl text-3xl font-black tracking-tight se-text-main sm:text-5xl">
-                Request help with your next business tool setup.
-            </h2>
-
-            <p class="mx-auto mt-5 max-w-2xl text-lg se-text-muted">
-                Submit your request and we will review the tool, plan, seats, and setup requirements before sending the next step.
-            </p>
-
-            <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                <a href="{{ route('concierge') }}" class="se-accent rounded-full px-7 py-4 text-base font-bold">
-                    Start a Concierge Request
-                </a>
-
-                <a href="{{ route('deals') }}" class="rounded-full border se-border px-7 py-4 text-base font-bold se-text-main hover:se-surface">
-                    View Deals
-                </a>
-            </div>
-        </div>
-    </section>
-</x-layouts.public>
+@endsection
