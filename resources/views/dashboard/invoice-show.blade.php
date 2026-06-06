@@ -1,200 +1,391 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+@extends('layouts.dashboard')
+
+@section('content')
+
+<div class="sd-page-title">
+    <h1>Invoice Details</h1>
+    <p>Review invoice pricing, payment status, and payment records.</p>
+</div>
+
+<div class="sd-detail-actions">
+    <a href="{{ route('dashboard.invoices') }}">← Back to invoices</a>
+</div>
+
+<div class="sd-invoice-detail-grid">
+    <section class="sd-card sd-card-pad">
+        <div class="sd-section-title">
+            <h2>{{ $invoice->invoice_reference ?? 'INV-' . str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</h2>
+
+            <span class="sd-status sd-status--{{ $invoice->status }}">
+                {{ str_replace('_', ' ', Str::title($invoice->status)) }}
+            </span>
+        </div>
+
+        <div class="sd-invoice-summary">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Invoice {{ $invoice->invoice_reference }}
-                </h2>
-                <p class="mt-1 text-sm text-gray-500">
-                    Review your invoice details and payment status.
-                </p>
+                <span>Request</span>
+                <strong>
+                    {{ $invoice->conciergeRequest?->service_name 
+                        ?? $invoice->conciergeRequest?->provider?->name 
+                        ?? 'StackEase Request' 
+                    }}
+                </strong>
             </div>
 
-            <a href="{{ route('dashboard.invoices') }}"
-               class="inline-flex items-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800">
-                Back to Invoices
-            </a>
+            <div>
+                <span>Currency</span>
+                <strong>{{ $invoice->currency ?? 'NGN' }}</strong>
+            </div>
+
+            <div>
+                <span>Base USD Cost</span>
+                <strong>${{ number_format((float) ($invoice->base_usd_cost ?? 0), 2) }}</strong>
+            </div>
+
+            <div>
+                <span>FX Rate</span>
+                <strong>₦{{ number_format((float) ($invoice->fx_rate ?? 0), 2) }}</strong>
+            </div>
+
+            <div>
+                <span>FX Buffer</span>
+                <strong>{{ number_format((float) ($invoice->fx_buffer_percent ?? 0), 2) }}%</strong>
+            </div>
+
+            <div>
+                <span>FX Buffer Amount</span>
+                <strong>₦{{ number_format((float) ($invoice->fx_buffer_applied ?? 0), 2) }}</strong>
+            </div>
+
+            <div>
+                <span>Service Fee</span>
+                <strong>₦{{ number_format((float) ($invoice->service_fee ?? 0), 2) }}</strong>
+            </div>
+
+            <div>
+                <span>Gateway Fee</span>
+                <strong>₦{{ number_format((float) ($invoice->gateway_fee ?? 0), 2) }}</strong>
+            </div>
+
+            <div>
+                <span>Sent At</span>
+                <strong>{{ $invoice->sent_at ? \Carbon\Carbon::parse($invoice->sent_at)->format('M d, Y h:i A') : 'Not sent' }}</strong>
+            </div>
+
+            <div>
+                <span>Expires At</span>
+                <strong>{{ $invoice->expires_at ? \Carbon\Carbon::parse($invoice->expires_at)->format('M d, Y h:i A') : 'Not set' }}</strong>
+            </div>
+
+            <div>
+                <span>Paid At</span>
+                <strong>{{ $invoice->paid_at ? \Carbon\Carbon::parse($invoice->paid_at)->format('M d, Y h:i A') : 'Not paid' }}</strong>
+            </div>
+
+            <div>
+                <span>Created</span>
+                <strong>{{ $invoice->created_at?->format('M d, Y h:i A') }}</strong>
+            </div>
         </div>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-6 lg:grid-cols-3">
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 lg:col-span-2">
-                    <h3 class="text-lg font-black text-gray-900">Invoice Summary</h3>
+        @if (! empty($invoice->notes))
+            <div class="sd-invoice-note-box">
+                <span>Invoice Note</span>
+                <p>{{ $invoice->notes }}</p>
+            </div>
+        @endif
 
-                    <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Invoice Reference</dt>
-                            <dd class="mt-1 text-gray-900">{{ $invoice->invoice_reference }}</dd>
-                        </div>
+        @if ($invoice->pricingSnapshot)
+            <div class="sd-pricing-snapshot">
+                <h3>Pricing Snapshot</h3>
 
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Status</dt>
-                            <dd class="mt-1 capitalize text-gray-900">{{ str_replace('_', ' ', $invoice->status) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Request Reference</dt>
-                            <dd class="mt-1 text-gray-900">
-                                {{ $invoice->conciergeRequest?->request_reference ?? 'Not linked' }}
-                            </dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Currency</dt>
-                            <dd class="mt-1 text-gray-900">{{ $invoice->currency ?? 'NGN' }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Base USD Cost</dt>
-                            <dd class="mt-1 text-gray-900">${{ number_format($invoice->base_usd_cost, 2) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">FX Rate</dt>
-                            <dd class="mt-1 text-gray-900">₦{{ number_format($invoice->fx_rate, 2) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">FX Buffer</dt>
-                            <dd class="mt-1 text-gray-900">{{ number_format($invoice->fx_buffer_percent, 2) }}%</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">FX Buffer Amount</dt>
-                            <dd class="mt-1 text-gray-900">₦{{ number_format($invoice->fx_buffer_applied, 2) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Service Fee</dt>
-                            <dd class="mt-1 text-gray-900">₦{{ number_format($invoice->service_fee, 2) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Gateway Fee</dt>
-                            <dd class="mt-1 text-gray-900">₦{{ number_format($invoice->gateway_fee, 2) }}</dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Sent At</dt>
-                            <dd class="mt-1 text-gray-900">
-                                {{ $invoice->sent_at ? $invoice->sent_at->format('M d, Y h:i A') : 'Not sent' }}
-                            </dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Expires At</dt>
-                            <dd class="mt-1 text-gray-900">
-                                {{ $invoice->expires_at ? $invoice->expires_at->format('M d, Y h:i A') : 'Not set' }}
-                            </dd>
-                        </div>
-
-                        <div>
-                            <dt class="text-sm font-bold text-gray-500">Paid At</dt>
-                            <dd class="mt-1 text-gray-900">
-                                {{ $invoice->paid_at ? $invoice->paid_at->format('M d, Y h:i A') : 'Not paid yet' }}
-                            </dd>
-                        </div>
-                    </dl>
-
-                    @if ($invoice->notes)
-                        <div class="mt-6 rounded-xl bg-gray-50 p-4">
-                            <h4 class="text-sm font-black text-gray-900">Invoice Notes</h4>
-                            <p class="mt-2 text-sm leading-6 text-gray-600">{{ $invoice->notes }}</p>
-                        </div>
-                    @endif
-                </div>
-
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <p class="text-sm font-medium text-gray-500">Amount Due</p>
-
-                    <p class="mt-2 text-3xl font-black text-gray-900">
-                        ₦{{ number_format($invoice->total_naira_amount, 2) }}
-                    </p>
-
-                    <span class="mt-4 inline-flex rounded-full px-3 py-1 text-xs font-bold capitalize
-                        @if ($invoice->status === 'paid')
-                            bg-emerald-100 text-emerald-700
-                        @elseif (in_array($invoice->status, ['sent', 'awaiting_payment']))
-                            bg-yellow-100 text-yellow-700
-                        @elseif (in_array($invoice->status, ['expired', 'cancelled']))
-                            bg-red-100 text-red-700
-                        @else
-                            bg-gray-100 text-gray-700
-                        @endif
-                    ">
-                        {{ str_replace('_', ' ', $invoice->status) }}
-                    </span>
-
-                    <div class="mt-6">
-                        @if ($invoice->status === 'awaiting_payment')
-                            <button type="button"
-                                    class="w-full rounded-lg bg-emerald-500 px-4 py-3 text-sm font-black text-white hover:bg-emerald-600">
-                                Pay Now
-                            </button>
-
-                            <p class="mt-3 text-xs leading-5 text-gray-500">
-                                Online payment will be powered by Paystack. This button will be connected in Phase 9.1.
-                            </p>
-                        @elseif ($invoice->status === 'paid')
-                            <div class="rounded-xl bg-emerald-50 p-4 text-sm font-bold text-emerald-700">
-                                This invoice has been paid.
-                            </div>
-                        @elseif ($invoice->status === 'expired')
-                            <div class="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">
-                                This invoice has expired. Please request recalculation.
-                            </div>
-                        @elseif ($invoice->status === 'cancelled')
-                            <div class="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">
-                                This invoice has been cancelled.
-                            </div>
-                        @elseif ($invoice->status === 'refunded')
-                            <div class="rounded-xl bg-gray-50 p-4 text-sm font-bold text-gray-700">
-                                This invoice has been refunded.
-                            </div>
-                        @else
-                            <div class="rounded-xl bg-gray-50 p-4 text-sm font-bold text-gray-700">
-                                Current status: {{ str_replace('_', ' ', $invoice->status) }}
-                            </div>
-                        @endif
+                <div class="sd-invoice-summary">
+                    <div>
+                        <span>Provider Cost</span>
+                        <strong>
+                            {{ $invoice->pricingSnapshot->provider_cost_currency ?? 'USD' }}
+                            {{ number_format((float) ($invoice->pricingSnapshot->provider_cost_amount ?? 0), 2) }}
+                        </strong>
                     </div>
 
-                    <div class="mt-6 rounded-xl bg-gray-50 p-4">
-                        <h4 class="text-sm font-black text-gray-900">Payment Notice</h4>
-                        <p class="mt-2 text-xs leading-5 text-gray-500">
-                            FX-sensitive invoices are valid only until the expiry time shown. Late or incomplete payments may require admin review or recalculation.
-                        </p>
+                    <div>
+                        <span>Local Provider Cost</span>
+                        <strong>₦{{ number_format((float) ($invoice->pricingSnapshot->local_provider_cost ?? 0), 2) }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Snapshot FX Rate</span>
+                        <strong>₦{{ number_format((float) ($invoice->pricingSnapshot->fx_rate ?? 0), 2) }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Final Total</span>
+                        <strong>₦{{ number_format((float) ($invoice->pricingSnapshot->final_total ?? 0), 2) }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Rate Source</span>
+                        <strong>{{ $invoice->pricingSnapshot->rate_source ?? 'Manual admin rate' }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Valid Until</span>
+                        <strong>
+                            {{ $invoice->pricingSnapshot->valid_until 
+                                ? \Carbon\Carbon::parse($invoice->pricingSnapshot->valid_until)->format('M d, Y h:i A') 
+                                : 'Not set' 
+                            }}
+                        </strong>
                     </div>
                 </div>
             </div>
+        @endif
+    </section>
 
-            @if ($invoice->payments->count())
-                <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <h3 class="text-lg font-black text-gray-900">Payment Records</h3>
+    <aside class="sd-side-stack">
+        <section class="sd-card sd-card-pad sd-payment-card">
+            <span>Total Amount Due</span>
 
-                    <div class="mt-4 divide-y divide-gray-200">
-                        @foreach ($invoice->payments as $payment)
-                            <div class="py-4">
-                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
-                                        <p class="font-bold text-gray-900">
-                                            {{ $payment->payment_reference }}
-                                        </p>
-                                        <p class="text-sm text-gray-500">
-                                            {{ ucfirst($payment->gateway) }} · {{ ucfirst(str_replace('_', ' ', $payment->status)) }}
-                                        </p>
-                                    </div>
+            <strong>
+                ₦{{ number_format((float) ($invoice->total_naira_amount ?? $invoice->amount ?? 0), 2) }}
+            </strong>
 
-                                    <p class="font-black text-gray-900">
-                                        ₦{{ number_format($payment->amount, 2) }}
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+            @if (in_array($invoice->status, ['sent', 'awaiting_payment']))
+                <p>This invoice is awaiting payment. Paystack payment will be connected in the next payment phase.</p>
+
+                <button type="button" disabled>
+                    Pay Now Coming Soon
+                </button>
+            @elseif ($invoice->status === 'paid')
+                <p>This invoice has been paid and confirmed.</p>
+            @elseif ($invoice->status === 'expired')
+                <p>This invoice has expired. Please contact StackEase or submit a new request.</p>
+            @else
+                <p>Current invoice status: {{ str_replace('_', ' ', Str::title($invoice->status)) }}.</p>
             @endif
-        </div>
-    </div>
-</x-app-layout>
+        </section>
+
+        <section class="sd-card sd-card-pad">
+            <div class="sd-section-title">
+                <h2>Payment Records</h2>
+            </div>
+
+            <div class="sd-payment-list">
+                @forelse ($invoice->payments as $payment)
+                    <article class="sd-payment-item">
+                        <div>
+                            <strong>{{ $payment->payment_reference ?? 'PAY-' . str_pad($payment->id, 5, '0', STR_PAD_LEFT) }}</strong>
+                            <small>{{ Str::title(str_replace('_', ' ', $payment->gateway ?? 'Manual')) }}</small>
+                        </div>
+
+                        <span class="sd-status sd-status--{{ $payment->status }}">
+                            {{ Str::title(str_replace('_', ' ', $payment->status)) }}
+                        </span>
+
+                        <p>
+                            ₦{{ number_format((float) ($payment->amount ?? 0), 2) }}
+                        </p>
+
+                        <small>
+                            {{ $payment->paid_at 
+                                ? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y h:i A') 
+                                : $payment->created_at?->format('M d, Y h:i A') 
+                            }}
+                        </small>
+                    </article>
+                @empty
+                    <p class="sd-muted-text">No payment has been recorded for this invoice yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="sd-card sd-card-pad sd-help-panel">
+            <div>
+                <h2>Need help?</h2>
+                <p>Open a support ticket if you need help with this invoice.</p>
+                <a href="{{ route('dashboard.tickets') }}">Create Support Ticket</a>
+            </div>
+        </section>
+    </aside>
+</div>
+
+<style>
+    .sd-detail-actions {
+        margin: -10px 0 20px;
+    }
+
+    .sd-detail-actions a {
+        display: inline-flex;
+        color: #008f7a;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .sd-invoice-detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 20px;
+    }
+
+    .sd-invoice-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .sd-invoice-summary div {
+        padding: 16px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .sd-invoice-summary span,
+    .sd-invoice-note-box span {
+        display: block;
+        margin-bottom: 7px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .sd-invoice-summary strong {
+        display: block;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .sd-invoice-note-box {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(24, 199, 167, 0.07);
+        border: 1px solid rgba(24, 199, 167, 0.16);
+    }
+
+    .sd-invoice-note-box p {
+        margin: 0;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .sd-pricing-snapshot {
+        margin-top: 26px;
+    }
+
+    .sd-pricing-snapshot h3 {
+        margin: 0 0 16px;
+        font-size: 16px;
+        font-weight: 850;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+    }
+
+    .sd-payment-card > span {
+        display: block;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .sd-payment-card > strong {
+        display: block;
+        color: #0f172a;
+        font-size: 34px;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        margin-bottom: 14px;
+    }
+
+    .sd-payment-card p {
+        margin: 0 0 18px;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .sd-payment-card button {
+        width: 100%;
+        height: 42px;
+        border: 0;
+        border-radius: 999px;
+        background: #cbd5e1;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 850;
+        cursor: not-allowed;
+    }
+
+    .sd-payment-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .sd-payment-item {
+        padding: 14px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .sd-payment-item strong {
+        display: block;
+        color: #0f172a;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .sd-payment-item small {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .sd-payment-item p {
+        margin: 10px 0 0;
+        color: #0f172a;
+        font-size: 15px;
+        font-weight: 850;
+    }
+
+    .sd-status--paid,
+    .sd-status--verified {
+        background: rgba(34, 197, 94, 0.12);
+        color: #047857;
+    }
+
+    .sd-status--pending,
+    .sd-status--awaiting_payment,
+    .sd-status--sent {
+        background: rgba(245, 158, 11, 0.14);
+        color: #b45309;
+    }
+
+    .sd-status--expired,
+    .sd-status--cancelled,
+    .sd-status--rejected,
+    .sd-status--failed,
+    .sd-status--refunded {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    @media (max-width: 1100px) {
+        .sd-invoice-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .sd-invoice-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@endsection

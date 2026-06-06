@@ -157,41 +157,85 @@
 }
 
 .se-theme-toggle {
-    width: 42px;
-    height: 42px;
-    display: inline-grid;
-    place-items: center;
-    border-radius: 999px;
-    border: 1px solid var(--se-border);
-    background: rgba(255, 255, 255, 0.56);
-    color: var(--se-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
 }
 
-.theme-dark .se-theme-toggle {
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.se-menu-toggle {
-    display: none;
-    width: 42px;
-    height: 42px;
+.se-theme-toggle__track {
+    position: relative;
+    width: 68px;
+    height: 38px;
     border-radius: 999px;
-    border: 1px solid var(--se-border);
-    background: var(--se-surface);
-    cursor: pointer;
+    background: linear-gradient(135deg, #18c7a7, #14d8c4);
+    box-shadow: inset 0 0 0 1px rgba(2, 11, 31, 0.1);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
-.se-menu-toggle span {
-    display: block;
-    width: 18px;
-    height: 2px;
-    background: var(--se-text);
-    margin: 4px auto;
+.se-theme-toggle__thumb {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 5px 14px rgba(2, 11, 31, 0.18);
+    transition: transform 0.25s ease;
+    z-index: 2;
 }
 
-.se-mobile-menu {
-    display: none;
+.se-theme-toggle__sun,
+.se-theme-toggle__moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.se-theme-toggle__sun {
+    left: 12px;
+    color: #ffffff;
+    opacity: 0;
+}
+
+.se-theme-toggle__moon {
+    right: 12px;
+    color: #ffffff;
+    opacity: 1;
+}
+
+.theme-dark .se-theme-toggle__track,
+.se-body.theme-dark .se-theme-toggle__track,
+.se-html.theme-dark .se-theme-toggle__track {
+    background: #1f2937;
+}
+
+.theme-dark .se-theme-toggle__thumb,
+.se-body.theme-dark .se-theme-toggle__thumb,
+.se-html.theme-dark .se-theme-toggle__thumb {
+    transform: translateX(30px);
+}
+
+.theme-dark .se-theme-toggle__sun,
+.se-body.theme-dark .se-theme-toggle__sun,
+.se-html.theme-dark .se-theme-toggle__sun {
+    opacity: 1;
+}
+
+.theme-dark .se-theme-toggle__moon,
+.se-body.theme-dark .se-theme-toggle__moon,
+.se-html.theme-dark .se-theme-toggle__moon {
+    opacity: 0;
 }
 
 .se-footer {
@@ -1354,4 +1398,337 @@
     .se-ref-why-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* =========================================================
+   STACKEASE FINAL PUBLIC HEADER OVERRIDE
+   Matches Deals page font, spacing, and button treatment
+========================================================= */
+
+.se-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 72px;
+    background: #030712;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: rgba(0, 0, 0, 0.4) 0 1px 0 0;
+}
+
+.se-header__inner {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.se-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: #f8fafc;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.se-logo__mark {
+    width: 40px;
+    height: 40px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #18c7a7;
+    color: #020617;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.se-logo__text {
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+    color: #f8fafc;
+    letter-spacing: -0.04em;
+}
+
+.se-logo__text span {
+    color: #18c7a7;
+}
+
+.se-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    flex: 1;
+    min-width: 0;
+}
+
+.se-nav a {
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 0.2s ease;
+}
+
+.se-nav a:hover {
+    color: #f8fafc;
+}
+
+.se-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.se-login-link {
+    color: #e5e7eb;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.2;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 0.2s ease;
+}
+
+.se-login-link:hover {
+    color: #ffffff;
+}
+
+.se-btn--primary {
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #18c7a7;
+    color: #020617;
+    border: 1px solid rgba(24, 199, 167, 0.85);
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    box-shadow: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.se-btn--primary:hover {
+    transform: translateY(-1px);
+    background: #22e0bd;
+}
+
+/* Toggle switch */
+.se-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.se-theme-toggle__track {
+    position: relative;
+    width: 68px;
+    height: 38px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.se-theme-toggle__thumb {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s ease;
+    z-index: 2;
+}
+
+.se-theme-toggle__sun,
+.se-theme-toggle__moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    line-height: 1;
+    color: #f8fafc;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+}
+
+.se-theme-toggle__sun {
+    left: 12px;
+    opacity: 0;
+}
+
+.se-theme-toggle__moon {
+    right: 12px;
+    opacity: 1;
+}
+
+.theme-dark .se-theme-toggle__thumb {
+    transform: translateX(30px);
+    background: #18c7a7;
+}
+
+.theme-dark .se-theme-toggle__sun {
+    opacity: 1;
+}
+
+.theme-dark .se-theme-toggle__moon {
+    opacity: 0;
+}
+
+/* Important: hide mobile menu by default */
+.se-mobile-menu {
+    display: none;
+}
+
+.se-menu-toggle {
+    display: none;
+}
+
+/* Tablet/mobile */
+@media (max-width: 1180px) {
+    .se-nav {
+        display: none;
+    }
+
+    .se-menu-toggle {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.04);
+        cursor: pointer;
+    }
+
+    .se-menu-toggle span {
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: #f8fafc;
+    }
+
+    .se-mobile-menu {
+        position: absolute;
+        top: 72px;
+        left: 16px;
+        right: 16px;
+        padding: 18px;
+        border-radius: 18px;
+        background: #030712;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    .se-mobile-menu.is-open {
+        display: grid;
+        gap: 10px;
+    }
+
+    .se-mobile-menu a {
+        color: #e5e7eb;
+        font-size: 15px;
+        font-weight: 800;
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+}
+
+@media (max-width: 720px) {
+    .se-header__actions .se-login-link,
+    .se-header__actions .se-btn--primary {
+        display: none;
+    }
+
+    .se-logo__text {
+        font-size: 18px;
+    }
+
+    .se-theme-toggle__track {
+        width: 62px;
+        height: 36px;
+    }
+
+    .se-theme-toggle__thumb {
+        width: 22px;
+        height: 22px;
+    }
+
+    .theme-dark .se-theme-toggle__thumb {
+        transform: translateX(28px);
+    }
+}
+
+/* =========================================================
+   STACKEASE HEADER FONT REFINEMENT
+   Smaller, lighter, cleaner header typography
+========================================================= */
+
+.se-nav a {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+}
+
+.se-login-link {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+}
+
+.se-btn--primary {
+    height: 38px;
+    padding: 0 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+}
+
+.se-logo__text {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
+.se-logo__mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.se-nav {
+    gap: 24px;
+}
+
+.se-header__actions {
+    gap: 10px;
 }

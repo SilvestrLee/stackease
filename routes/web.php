@@ -11,6 +11,8 @@ Route::get('/services', [PublicPageController::class, 'services'])->name('servic
 
 Route::get('/deals', [PublicPageController::class, 'deals'])->name('deals');
 
+Route::get('/deals/{slug}', [PublicPageController::class, 'dealShow'])->name('deals.show');
+
 Route::get('/resources', [PublicPageController::class, 'resources'])->name('resources.index');
 
 Route::get('/resources/{slug}', [PublicPageController::class, 'resourceShow'])->name('resources.show');
@@ -35,49 +37,16 @@ Route::get('/acceptable-use-policy', [PublicPageController::class, 'acceptableUs
 
 Route::get('/disclaimer', [PublicPageController::class, 'disclaimer'])->name('policies.disclaimer');
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard.index');
+    })->name('dashboard');
 
-    return view('dashboard', [
-        'pendingRequests' => $user->conciergeRequests()
-            ->whereNotIn('status', ['completed', 'cancelled', 'refunded'])
-            ->latest()
-            ->take(5)
-            ->get(),
-
-        'unpaidInvoices' => $user->invoices()
-            ->whereIn('status', ['sent', 'awaiting_payment', 'expired_paid_flagged', 'underpaid_action_required'])
-            ->latest()
-            ->take(5)
-            ->get(),
-
-        'activeSubscriptions' => $user->subscriptions()
-            ->whereIn('status', ['active', 'pending_setup', 'renewal_due'])
-            ->latest()
-            ->take(5)
-            ->get(),
-
-        'renewalDueSoon' => $user->subscriptions()
-            ->whereNotNull('renewal_date')
-            ->whereDate('renewal_date', '<=', now()->addDays(7))
-            ->latest('renewal_date')
-            ->take(5)
-            ->get(),
-
-        'openTickets' => $user->supportTickets()
-            ->whereNotIn('status', ['resolved', 'closed'])
-            ->latest()
-            ->take(5)
-            ->get(),
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
     Route::get('/dashboard/requests', function () {
         return view('dashboard.requests', [
             'requests' => auth()->user()
                 ->conciergeRequests()
-                ->with(['provider', 'batchWindow'])
+                ->with(['provider', 'batchWindow', 'invoices'])
                 ->latest()
                 ->get(),
         ]);
@@ -92,6 +61,10 @@ Route::middleware('auth')->group(function () {
                 ->get(),
         ]);
     })->name('dashboard.invoices');
+
+    Route::get('/dashboard/payment-proofs', function () {
+        return view('dashboard.payment-proofs');
+    })->name('dashboard.payment-proofs');
 
     Route::get('/dashboard/invoices/{invoice}', function (Invoice $invoice) {
         abort_unless($invoice->user_id === auth()->id(), 403);

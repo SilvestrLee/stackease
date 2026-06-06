@@ -1,6 +1,4 @@
-@extends('layouts.public')
-
-@section('content')
+<x-layouts.public title="Managed Subscriptions | StackEase">
     <section class="relative overflow-hidden">
         <div class="absolute inset-0 opacity-80" style="background: radial-gradient(circle at top right, rgba(52, 211, 153, 0.16), transparent 35%);"></div>
 
@@ -168,4 +166,4 @@
             </div>
         </div>
     </section>
-@endsection
+</x-layouts.public>

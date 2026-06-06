@@ -1,152 +1,223 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    My Subscriptions
-                </h2>
-                <p class="mt-1 text-sm text-gray-500">
-                    View your active, pending, and renewal-related StackEase subscriptions.
-                </p>
-            </div>
+@extends('layouts.dashboard')
 
-            <a href="{{ route('concierge') }}" class="inline-flex items-center rounded-lg bg-emerald-500 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-600">
-                New Concierge Request
-            </a>
-        </div>
-    </x-slot>
+@section('content')
 
-    <div class="py-12">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="mb-6 grid gap-4 md:grid-cols-4">
-                <a href="{{ route('dashboard') }}" class="rounded-2xl bg-white p-4 text-center font-bold text-gray-800 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50">
-                    Overview
-                </a>
+<div class="sd-page-title">
+    <h1>My Subscriptions</h1>
+    <p>View your active, pending, and renewal-related StackEase subscriptions.</p>
+</div>
 
-                <a href="{{ route('dashboard.requests') }}" class="rounded-2xl bg-white p-4 text-center font-bold text-gray-800 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50">
-                    My Requests
-                </a>
-
-                <a href="{{ route('dashboard.invoices') }}" class="rounded-2xl bg-white p-4 text-center font-bold text-gray-800 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50">
-                    My Invoices
-                </a>
-
-                <a href="{{ route('dashboard.tickets') }}" class="rounded-2xl bg-white p-4 text-center font-bold text-gray-800 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50">
-                    Support Tickets
-                </a>
-            </div>
-
-            <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200">
-                <div class="border-b border-gray-200 px-6 py-5">
-                    <h3 class="text-lg font-black text-gray-900">Subscription Records</h3>
-                </div>
-
-                <div class="divide-y divide-gray-200">
-                    @forelse ($subscriptions as $subscription)
-                        <div class="p-6">
-                            <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-                                <div>
-                                    <p class="text-lg font-black text-gray-900">
-                                        {{ $subscription->provider_name }}
-                                    </p>
-
-                                    <p class="mt-1 text-sm text-gray-500">
-                                        {{ $subscription->subscription_reference }}
-                                    </p>
-
-                                    <div class="mt-4 grid gap-3 text-sm text-gray-600 sm:grid-cols-2 lg:grid-cols-4">
-                                        <p>
-                                            <span class="font-bold text-gray-900">Provider:</span>
-                                            {{ $subscription->provider?->name ?? $subscription->provider_name }}
-                                        </p>
-
-                                        <p>
-                                            <span class="font-bold text-gray-900">Plan:</span>
-                                            {{ $subscription->plan_type ?? 'Not specified' }}
-                                        </p>
-
-                                        <p>
-                                            <span class="font-bold text-gray-900">Seats:</span>
-                                            {{ $subscription->seat_count }}
-                                        </p>
-
-                                        <p>
-                                            <span class="font-bold text-gray-900">Amount:</span>
-                                            ₦{{ number_format($subscription->amount, 2) }}
-                                        </p>
-                                    </div>
-
-                                    <div class="mt-4 grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
-                                        <p>
-                                            <span class="font-bold text-gray-900">Start Date:</span>
-                                            {{ $subscription->start_date ? $subscription->start_date->format('M d, Y') : 'Not set' }}
-                                        </p>
-
-                                        <p>
-                                            <span class="font-bold text-gray-900">Renewal Date:</span>
-                                            {{ $subscription->renewal_date ? $subscription->renewal_date->format('M d, Y') : 'Not set' }}
-                                        </p>
-                                    </div>
-
-                                    @if ($subscription->access_note)
-                                        <div class="mt-5 rounded-xl bg-gray-50 p-4">
-                                            <p class="text-sm font-bold text-gray-900">Access / Setup Note</p>
-                                            <p class="mt-2 text-sm leading-6 text-gray-600">
-                                                {{ $subscription->access_note }}
-                                            </p>
-                                        </div>
-                                    @endif
-
-                                    @if ($subscription->credential)
-                                        <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                                            <p class="text-sm font-bold text-emerald-800">
-                                                Secure access payload available
-                                            </p>
-                                            <p class="mt-2 text-sm leading-6 text-emerald-700">
-                                                This subscription has encrypted setup/access information. In a later phase, this will be revealed only after the acknowledgment gate is accepted.
-                                            </p>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="min-w-[220px] rounded-2xl bg-gray-50 p-5">
-                                    <p class="text-sm font-medium text-gray-500">Status</p>
-
-                                    <span class="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-bold capitalize
-                                        @if ($subscription->status === 'active')
-                                            bg-emerald-100 text-emerald-700
-                                        @elseif (in_array($subscription->status, ['pending_setup', 'renewal_due']))
-                                            bg-yellow-100 text-yellow-700
-                                        @elseif (in_array($subscription->status, ['expired', 'suspended', 'cancelled']))
-                                            bg-red-100 text-red-700
-                                        @else
-                                            bg-gray-100 text-gray-700
-                                        @endif
-                                    ">
-                                        {{ str_replace('_', ' ', $subscription->status) }}
-                                    </span>
-
-                                    @if ($subscription->invoice)
-                                        <p class="mt-4 text-xs text-gray-500">
-                                            Invoice: {{ $subscription->invoice->invoice_reference }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="p-6">
-                            <p class="text-sm text-gray-500">
-                                You do not have any subscription records yet.
-                            </p>
-
-                            <a href="{{ route('concierge') }}" class="mt-4 inline-flex rounded-lg bg-emerald-500 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-600">
-                                Request Subscription Support
-                            </a>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-        </div>
+<section class="sd-card sd-card-pad">
+    <div class="sd-section-title">
+        <h2>Subscription Records</h2>
+        <a href="{{ route('concierge') }}">Request new setup →</a>
     </div>
-</x-app-layout>
+
+    <div class="sd-subscription-list">
+        @forelse ($subscriptions as $subscription)
+            <article class="sd-subscription-record">
+                <div class="sd-subscription-record-main">
+                    <div class="sd-subscription-record-icon">
+                        {{ strtoupper(substr($subscription->provider?->name ?? $subscription->name ?? 'S', 0, 1)) }}
+                    </div>
+
+                    <div>
+                        <h3>{{ $subscription->provider?->name ?? $subscription->name ?? 'Subscription' }}</h3>
+                        <p>{{ $subscription->subscription_reference ?? 'SUB-' . str_pad($subscription->id, 5, '0', STR_PAD_LEFT) }}</p>
+                    </div>
+                </div>
+
+                <div class="sd-subscription-record-grid">
+                    <div>
+                        <span>Provider</span>
+                        <strong>{{ $subscription->provider?->name ?? 'Not assigned' }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Plan</span>
+                        <strong>{{ $subscription->plan_name ?? 'Managed Plan' }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Seats</span>
+                        <strong>{{ $subscription->seat_count ?? 1 }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Amount</span>
+                        <strong>
+                            ₦{{ number_format((float) ($subscription->amount ?? 0), 2) }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Start Date</span>
+                        <strong>
+                            {{ $subscription->start_date ? \Carbon\Carbon::parse($subscription->start_date)->format('M d, Y') : 'Not set' }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Renewal Date</span>
+                        <strong>
+                            {{ $subscription->renewal_date ? \Carbon\Carbon::parse($subscription->renewal_date)->format('M d, Y') : 'Not set' }}
+                        </strong>
+                    </div>
+                </div>
+
+                @if (! empty($subscription->access_note))
+                    <div class="sd-access-note">
+                        <span>Access / Setup Note</span>
+                        <p>{{ $subscription->access_note }}</p>
+                    </div>
+                @endif
+
+                <div class="sd-subscription-record-side">
+                    <span class="sd-status">
+                        {{ str_replace('_', ' ', Str::title($subscription->status)) }}
+                    </span>
+
+                    @if ($subscription->invoice)
+                        <a href="{{ route('dashboard.invoices.show', $subscription->invoice) }}">
+                            View Invoice
+                        </a>
+                    @endif
+                </div>
+            </article>
+        @empty
+            <div class="sd-empty">
+                <strong>No subscriptions yet</strong>
+                <p>Your subscriptions will appear here after StackEase completes your setup.</p>
+                <a href="{{ route('concierge') }}">Request setup help</a>
+            </div>
+        @endforelse
+    </div>
+</section>
+
+<style>
+    .sd-subscription-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .sd-subscription-record {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 180px;
+        gap: 24px;
+        padding: 22px;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: #ffffff;
+    }
+
+    .sd-subscription-record-main {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .sd-subscription-record-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #18c7a7, #6366f1);
+        color: #ffffff;
+        font-weight: 900;
+    }
+
+    .sd-subscription-record h3 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 850;
+        letter-spacing: -0.03em;
+        color: #0f172a;
+    }
+
+    .sd-subscription-record p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .sd-subscription-record-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .sd-subscription-record-grid span,
+    .sd-access-note span {
+        display: block;
+        margin-bottom: 5px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .sd-subscription-record-grid strong {
+        display: block;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    .sd-access-note {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .sd-access-note p {
+        margin: 0;
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .sd-subscription-record-side {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 14px;
+        padding: 18px;
+        border-radius: 16px;
+        background: #f8fafc;
+    }
+
+    .sd-subscription-record-side a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: #18c7a7;
+        color: #020617;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+        .sd-subscription-record {
+            grid-template-columns: 1fr;
+        }
+
+        .sd-subscription-record-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sd-subscription-record-side {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+@endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BatchWindow;
 use App\Models\ConciergeRequest;
+use App\Models\Deal;
 use App\Models\Provider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,58 @@ class PublicPageController extends Controller
 
     public function deals(): View
     {
-        return view('public.deals');
+        return view('public.deals', [
+            'featuredDeals' => Deal::query()
+                ->with(['provider', 'category'])
+                ->where('status', 'published')
+                ->where('is_featured', true)
+                ->where(function ($query) {
+                    $query->whereNull('starts_at')
+                        ->orWhere('starts_at', '<=', now());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>=', now());
+                })
+                ->latest()
+                ->take(6)
+                ->get(),
+
+            'deals' => Deal::query()
+                ->with(['provider', 'category'])
+                ->where('status', 'published')
+                ->where(function ($query) {
+                    $query->whereNull('starts_at')
+                        ->orWhere('starts_at', '<=', now());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>=', now());
+                })
+                ->latest()
+                ->paginate(12),
+        ]);
+    }
+
+    public function dealShow(string $slug): View
+    {
+        $deal = Deal::query()
+            ->with(['provider', 'category'])
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->where(function ($query) {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>=', now());
+            })
+            ->firstOrFail();
+
+        return view('public.deal-show', [
+            'deal' => $deal,
+        ]);
     }
 
     public function resources(): View
@@ -39,9 +91,29 @@ class PublicPageController extends Controller
         ]);
     }
 
-    public function concierge(): View
+    public function concierge(Request $request): View
     {
+        $selectedDeal = null;
+
+        if ($request->filled('deal')) {
+            $selectedDeal = Deal::query()
+                ->with(['provider'])
+                ->where('slug', $request->deal)
+                ->where('status', 'published')
+                ->where(function ($query) {
+                    $query->whereNull('starts_at')
+                        ->orWhere('starts_at', '<=', now());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>=', now());
+                })
+                ->first();
+        }
+
         return view('public.concierge', [
+            'selectedDeal' => $selectedDeal,
+
             'providers' => Provider::where('status', 'active')
                 ->orderBy('name')
                 ->get(),
@@ -55,6 +127,7 @@ class PublicPageController extends Controller
     public function storeConciergeRequest(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'deal_id' => ['nullable', 'exists:deals,id'],
             'provider_id' => ['nullable', 'exists:providers,id'],
             'batch_window_id' => ['nullable', 'exists:batch_windows,id'],
             'service_name' => ['required', 'string', 'max:255'],
@@ -67,9 +140,24 @@ class PublicPageController extends Controller
             'user_notes' => ['required', 'string', 'max:5000'],
         ]);
 
+        $selectedDeal = null;
+
+        if (! empty($validated['deal_id'])) {
+            $selectedDeal = Deal::query()
+                ->where('id', $validated['deal_id'])
+                ->where('status', 'published')
+                ->first();
+        }
+
+        $userNotes = $validated['user_notes'];
+
+        if ($selectedDeal) {
+            $userNotes = "Deal Request: {$selectedDeal->title}\n\n" . $userNotes;
+        }
+
         ConciergeRequest::create([
             'user_id' => $request->user()->id,
-            'provider_id' => $validated['provider_id'] ?? null,
+            'provider_id' => $validated['provider_id'] ?? $selectedDeal?->provider_id,
             'batch_window_id' => $validated['batch_window_id'] ?? null,
             'request_reference' => 'REQ-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
             'service_name' => $validated['service_name'],
@@ -79,7 +167,7 @@ class PublicPageController extends Controller
             'duration' => $validated['duration'] ?? null,
             'budget_range' => $validated['budget_range'] ?? null,
             'existing_account' => $request->boolean('existing_account'),
-            'user_notes' => $validated['user_notes'],
+            'user_notes' => $userNotes,
             'status' => 'submitted',
             'priority' => 'normal',
         ]);

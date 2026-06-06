@@ -13,31 +13,35 @@
         <div class="se-container se-header__inner">
             <a href="{{ route('home') }}" class="se-logo" aria-label="StackEase">
                 <span class="se-logo__mark">S</span>
-                <span class="se-logo__text">StackEase</span>
+                <span class="se-logo__text">Stack<span>Ease</span></span>
             </a>
 
             <nav class="se-nav" aria-label="Main navigation">
                 <a href="{{ route('services') }}">Services</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="{{ url('/pricing') }}">Pricing</a>
+                <a href="{{ route('deals') }}">Deals</a>
+                <a href="{{ route('home') }}#how-it-works">How It Works</a>
                 <a href="{{ url('/resources') }}">Resources</a>
-                <a href="{{ url('/about-us') }}">About Us</a>
+                <a href="{{ route('managed-subscriptions') }}">Managed Subscriptions</a>
+                <a href="{{ route('concierge') }}">Concierge Request</a>
             </nav>
 
             <div class="se-header__actions">
                 <button class="se-theme-toggle" type="button" id="seThemeToggle" aria-label="Toggle theme">
-                    <span class="se-theme-toggle__icon" id="seThemeIcon">🌙</span>
+                    <span class="se-theme-toggle__track">
+                        <span class="se-theme-toggle__thumb"></span>
+                        <span class="se-theme-toggle__sun">☀</span>
+                        <span class="se-theme-toggle__moon">☾</span>
+                    </span>
                 </button>
 
                 @auth
                     <a href="{{ url('/dashboard') }}" class="se-login-link">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="se-login-link">Log in</a>
+                    <a href="{{ route('register') }}" class="se-btn se-btn--primary">Sign up</a>
                 @endauth
 
-                <a href="{{ route('concierge') }}" class="se-btn se-btn--primary">Request Setup Help</a>
-
-                <button class="se-menu-toggle" type="button" id="seMenuToggle" aria-label="Open menu">
+                <button class="se-menu-toggle" type="button" id="seMenuToggle" aria-label="Open menu" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -45,20 +49,20 @@
             </div>
         </div>
 
-        <div class="se-mobile-menu" id="seMobileMenu">
+        <div class="se-mobile-menu" id="seMobileMenu" aria-hidden="true">
             <a href="{{ route('services') }}">Services</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="{{ url('/pricing') }}">Pricing</a>
+            <a href="{{ route('deals') }}">Deals</a>
+            <a href="{{ route('home') }}#how-it-works">How It Works</a>
             <a href="{{ url('/resources') }}">Resources</a>
-            <a href="{{ url('/about-us') }}">About Us</a>
+            <a href="{{ route('managed-subscriptions') }}">Managed Subscriptions</a>
+            <a href="{{ route('concierge') }}">Concierge Request</a>
 
             @auth
                 <a href="{{ url('/dashboard') }}">Dashboard</a>
             @else
                 <a href="{{ route('login') }}">Log in</a>
+                <a href="{{ route('register') }}">Sign up</a>
             @endauth
-
-            <a href="{{ route('concierge') }}">Request Setup Help</a>
         </div>
     </header>
 
@@ -82,10 +86,25 @@
             <div>
                 <h4>Company</h4>
                 <a href="{{ url('/about-us') }}">About Us</a>
-                <a href="#how-it-works">How It Works</a>
+                <a href="{{ route('home') }}#how-it-works">How It Works</a>
                 <a href="{{ url('/pricing') }}">Pricing</a>
                 <a href="{{ url('/blog') }}">Blog</a>
                 <a href="{{ url('/contact-us') }}">Contact Us</a>
+            </div>
+
+            <div>
+                <h4>Platform</h4>
+                <a href="{{ route('deals') }}">Deals</a>
+                <a href="{{ route('concierge') }}">Concierge Request</a>
+                <a href="{{ route('managed-subscriptions') }}">Managed Subscriptions</a>
+
+                @auth
+                    <a href="{{ url('/dashboard') }}">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}">Dashboard Login</a>
+                @endauth
+
+                <a href="{{ url('/dashboard/tickets') }}">Support Tickets</a>
             </div>
 
             <div>
@@ -100,11 +119,11 @@
 
             <div>
                 <h4>Resources</h4>
+                <a href="{{ url('/resources') }}">Resources</a>
                 <a href="{{ url('/help-center') }}">Help Center</a>
                 <a href="{{ url('/guides') }}">Guides</a>
                 <a href="{{ url('/faq') }}">FAQ</a>
                 <a href="{{ url('/status') }}">Status</a>
-                <a href="{{ url('/request-support') }}">Request Support</a>
             </div>
 
             <div>
@@ -118,7 +137,7 @@
         </div>
 
         <div class="se-container se-footer__bottom">
-            <p>© 2025 StackEase. All rights reserved.</p>
+            <p>© {{ date('Y') }} StackEase. All rights reserved.</p>
             <p>Made with ❤️ in Nigeria</p>
         </div>
     </footer>
