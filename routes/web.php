@@ -3,7 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
 use App\Models\Invoice;
+use App\Models\Payment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
 
@@ -63,8 +66,59 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard.invoices');
 
     Route::get('/dashboard/payment-proofs', function () {
-        return view('dashboard.payment-proofs');
+        $user = auth()->user();
+    
+        return view('dashboard.payment-proofs', [
+            'invoices' => $user->invoices()
+                ->whereIn('status', ['sent', 'awaiting_payment', 'expired_paid_flagged', 'underpaid_action_required'])
+                ->latest()
+                ->get(),
+    
+            'payments' => $user->payments()
+                ->with('invoice')
+                ->where('gateway', 'bank_transfer')
+                ->latest()
+                ->get(),
+        ]);
     })->name('dashboard.payment-proofs');
+    
+    Route::post('/dashboard/payment-proofs', function (Request $request) {
+        $user = auth()->user();
+    
+        $validated = $request->validate([
+            'invoice_id' => ['required', 'exists:invoices,id'],
+            'amount' => ['required', 'numeric', 'min:1'],
+            'proof_of_payment' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf,webp', 'max:5120'],
+        ]);
+    
+        $invoice = $user->invoices()
+            ->where('id', $validated['invoice_id'])
+            ->whereIn('status', ['sent', 'awaiting_payment', 'expired_paid_flagged', 'underpaid_action_required'])
+            ->firstOrFail();
+    
+        $proofPath = $request->file('proof_of_payment')->store('payment-proofs', 'public');
+    
+        $payment = new Payment();
+        $payment->user_id = $user->id;
+        $payment->invoice_id = $invoice->id;
+        $payment->payment_reference = 'PAY-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6));
+        $payment->gateway = 'bank_transfer';
+        $payment->amount = $validated['amount'];
+        $payment->currency = $invoice->currency ?? 'NGN';
+        $payment->status = 'pending';
+        $payment->payment_channel = 'manual_bank_transfer';
+        $payment->proof_of_payment_path = $proofPath;
+        $payment->paid_at = now();
+        $payment->gateway_response = [
+            'source' => 'user_uploaded_payment_proof',
+            'submitted_at' => now()->toDateTimeString(),
+        ];
+        $payment->save();
+    
+        return redirect()
+            ->route('dashboard.payment-proofs')
+            ->with('status', 'Payment proof uploaded successfully. StackEase will review and verify it.');
+    })->name('dashboard.payment-proofs.store');
 
     Route::get('/dashboard/invoices/{invoice}', function (Invoice $invoice) {
         abort_unless($invoice->user_id === auth()->id(), 403);
