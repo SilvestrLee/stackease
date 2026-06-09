@@ -73,4 +73,43 @@ class Invoice extends Model
     {
         return $this->hasMany(Acknowledgment::class);
     }
+
+    public function isPaid(): bool
+    {
+        return $this->status === 'paid';
+    }
+
+    public function isUnpaid(): bool
+    {
+        return ! $this->isPaid();
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at !== null && now()->greaterThan($this->expires_at);
+    }
+
+    public function isPayable(): bool
+    {
+        return in_array($this->status, [
+            'sent',
+            'awaiting_payment',
+            'expired',
+        ], true);
+    }
+
+    public function isUnderpaid(): bool
+    {
+        return $this->status === 'underpaid_action_required';
+    }
+
+    public function isExpiredPaidFlagged(): bool
+    {
+        return $this->status === 'expired_paid_flagged';
+    }
+
+    public function formattedTotal(): string
+    {
+        return '₦' . number_format((float) $this->total_naira_amount, 2);
+    }
 }

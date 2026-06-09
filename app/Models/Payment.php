@@ -47,4 +47,25 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
+
+    public function isVerified(): bool
+    {
+        return $this->status === 'verified';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isPaystack(): bool
+    {
+        return $this->gateway === 'paystack';
+    }
+
+    public function isManualTransfer(): bool
+    {
+        return $this->payment_channel === 'bank_transfer'
+            || $this->payment_channel === 'manual_transfer';
+    }
 }

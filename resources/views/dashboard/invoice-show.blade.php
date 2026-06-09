@@ -7,6 +7,30 @@
     <p>Review invoice pricing, payment status, and payment records.</p>
 </div>
 
+@if(session('success'))
+    <div class="sd-alert sd-alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="sd-alert sd-alert-error">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('warning'))
+    <div class="sd-alert sd-alert-warning">
+        {{ session('warning') }}
+    </div>
+@endif
+
+@if(session('status'))
+    <div class="sd-alert sd-alert-info">
+        {{ session('status') }}
+    </div>
+@endif
+
 <div class="sd-detail-actions">
     <a href="{{ route('dashboard.invoices') }}">← Back to invoices</a>
 </div>
@@ -54,7 +78,7 @@
 
             <div>
                 <span>FX Buffer Amount</span>
-                <strong>₦{{ number_format((float) ($invoice->fx_buffer_applied ?? 0), 2) }}</strong>
+                <strong>₦{{ number_format((float) ($invoice->fx_buffer_amount ?? 0), 2) }}</strong>
             </div>
 
             <div>
@@ -150,16 +174,38 @@
                 ₦{{ number_format((float) ($invoice->total_naira_amount ?? $invoice->amount ?? 0), 2) }}
             </strong>
 
-            @if (in_array($invoice->status, ['sent', 'awaiting_payment']))
-                <p>This invoice is awaiting payment. Paystack payment will be connected in the next payment phase.</p>
+            @if ($invoice->isPayable() && ! $invoice->isPaid())
+                <p>
+                    Pay securely online using Paystack. Your invoice will be verified automatically after payment.
+                </p>
 
-                <button type="button" disabled>
-                    Pay Now Coming Soon
-                </button>
+                <form method="POST" action="{{ route('paystack.initialize', $invoice) }}">
+                    @csrf
+
+                    <button type="submit" class="sd-paystack-button">
+                        Pay Online with Paystack
+                    </button>
+                </form>
+
+                <a href="{{ route('dashboard.payment-proofs') }}" class="sd-manual-payment-link">
+                    Prefer bank transfer? Upload payment proof
+                </a>
             @elseif ($invoice->status === 'paid')
                 <p>This invoice has been paid and confirmed.</p>
+            @elseif ($invoice->status === 'expired_paid_flagged')
+                <p>Payment was received after invoice expiry. StackEase will review this manually.</p>
+            @elseif ($invoice->status === 'underpaid_action_required')
+                <p>Payment received is lower than the invoice total. Admin review is required.</p>
             @elseif ($invoice->status === 'expired')
-                <p>This invoice has expired. Please contact StackEase or submit a new request.</p>
+                <p>This invoice has expired. You may still attempt payment, but it will require admin review.</p>
+
+                <form method="POST" action="{{ route('paystack.initialize', $invoice) }}">
+                    @csrf
+
+                    <button type="submit" class="sd-paystack-button sd-paystack-button-warning">
+                        Pay Expired Invoice
+                    </button>
+                </form>
             @else
                 <p>Current invoice status: {{ str_replace('_', ' ', Str::title($invoice->status)) }}.</p>
             @endif
@@ -210,6 +256,39 @@
 </div>
 
 <style>
+    .sd-alert {
+        margin: 0 0 18px;
+        padding: 13px 15px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .sd-alert-success {
+        background: rgba(34, 197, 94, 0.10);
+        border: 1px solid rgba(34, 197, 94, 0.20);
+        color: #047857;
+    }
+
+    .sd-alert-error {
+        background: rgba(239, 68, 68, 0.10);
+        border: 1px solid rgba(239, 68, 68, 0.20);
+        color: #dc2626;
+    }
+
+    .sd-alert-warning {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.22);
+        color: #b45309;
+    }
+
+    .sd-alert-info {
+        background: rgba(14, 165, 233, 0.10);
+        border: 1px solid rgba(14, 165, 233, 0.20);
+        color: #0369a1;
+    }
+
     .sd-detail-actions {
         margin: -10px 0 20px;
     }
@@ -308,16 +387,50 @@
         line-height: 1.6;
     }
 
-    .sd-payment-card button {
+    .sd-payment-card form {
+        margin: 0;
+    }
+
+    .sd-payment-card button,
+    .sd-paystack-button {
         width: 100%;
         height: 42px;
         border: 0;
         border-radius: 999px;
-        background: #cbd5e1;
-        color: #475569;
+        background: #008f7a;
+        color: #ffffff;
         font-size: 13px;
         font-weight: 850;
-        cursor: not-allowed;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .sd-payment-card button:hover,
+    .sd-paystack-button:hover {
+        background: #007666;
+        transform: translateY(-1px);
+    }
+
+    .sd-paystack-button-warning {
+        background: #b45309;
+    }
+
+    .sd-paystack-button-warning:hover {
+        background: #92400e;
+    }
+
+    .sd-manual-payment-link {
+        display: flex;
+        justify-content: center;
+        margin-top: 12px;
+        color: #008f7a;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .sd-manual-payment-link:hover {
+        text-decoration: underline;
     }
 
     .sd-payment-list {
@@ -370,7 +483,9 @@
     .sd-status--cancelled,
     .sd-status--rejected,
     .sd-status--failed,
-    .sd-status--refunded {
+    .sd-status--refunded,
+    .sd-status--underpaid_action_required,
+    .sd-status--expired_paid_flagged {
         background: rgba(239, 68, 68, 0.1);
         color: #dc2626;
     }
